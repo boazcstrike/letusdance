@@ -1,0 +1,4 @@
+/node_modules
+Pipfile.lock
+package-lock.json
+/.vscode

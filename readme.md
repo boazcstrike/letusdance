@@ -104,3 +104,121 @@ Input all
     "example_field_name": "example content",
 }
 ```
+
+# 2nd part React Frontend
+python manage.py startapp frontend
+mkdir -p ./frontend/src/components
+mkdir -p ./frontend/{static,templates}/frontend
+
+add frontend to INSTALLED_APPS
+
+root directory
+```
+npm init -y
+npm i -D webpack webpack-cli
+npm i -D @babel/core babel-loader @babel/preset-env @babel/preset-react babel-plugin-transform-class-properties
+npm i react react-dom prop-types
+```
+
+## create .babelrc
+```
+{
+    "presets": ["@babel/preset-env","@babel/preset-react"],
+    "plugins": ["transform-class-properties"]
+}
+```
+
+## create webpack.config.js
+```
+module.exports = {
+    module: {
+        rules:[
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: "babel-loader"
+                }
+            }
+        ]
+    }
+}
+```
+
+## add to package.json
+```
+    "scripts": {
+        "dev": "webpack --mode development ./letusdance/frontend/src/index.js --output ./letusdance/frontend/static/frontend/main.js",
+        "build": "webpack --mode production ./letusdance/frontend/src/index.js --output ./letusdance/frontend/static/frontend/main.js",
+        "watch": "webpack --mode development --watch ./letusdance/frontend/src/index.js --output ./letusdance/frontend/static/frontend/main.js"
+    },
+```
+
+create frontend > src > index.js
+```
+import App from './components/App'
+```
+
+create frontend > src > components > App.js
+```
+import React, {Component} from 'react'
+import ReactDOM from 'react-dom'
+
+class App extends Component {
+    reder(){
+        return <h1>Hi I'm alive.</h1>
+    }
+}
+
+ReactDOM.render(<App />, document.getElementById('app'))
+```
+
+## create frontend > templates > frontend > index.html
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>React App</title>
+</head>
+<body>
+    <div id="app"></div>
+    {% load static %}
+    <script src="{% static "frontend/main.js" %}"></script>
+</body>
+</html>
+```
+
+## frontend > views.py
+```
+from django.shortcuts import render
+
+# Create your views here.
+def index(request):
+    return render(request, 'frontend/index.html')
+```
+
+## inside frontend > urls.py
+```
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.index)
+]
+```
+
+## add in mainfolder > urls.py
+    path('', include('frontend.urls')
+
+## run and serve
+```
+npm run dev # or just run npm run watch to watch the files
+python manage.py runserver # if you did not run this yet
+```
+
+from here the react app should work, if not, some things are left out, review again
+
+React works, things should display from the App.js. Voila
+
+# Happy Django React App! :D *** updated as of 6/7/2019
